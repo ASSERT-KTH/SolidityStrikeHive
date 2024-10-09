@@ -1,0 +1,82 @@
+# research_task:
+#  description: >
+#    Conduct a thorough research about {topic}
+#    Make sure you find any interesting and relevant information given
+#    the current year is 2024.
+#  expected_output: >
+#    A list with 10 bullet points of the most relevant information about {topic} and ideally
+#    with an example.
+#  agent: researcher
+
+
+
+
+
+
+
+
+
+
+static_code_analysis_task:
+    description: >
+        Conduct a static analysis the codebase for potential vulnerabilities.
+        This is the solidity smart contract code {code}
+    expected_output: >
+        A list of potential vulnerabilities found in the codebase analyzed statically
+    agent: static_code_analysis_agent
+
+smart_contract_research_task:
+    description: >
+        Conduct a research on smart contract vulnerabilities given the year is 2024
+    expected_output: >
+        A list of potential vulnerabilities found in smart contracts with an explanation of the
+        Solidity version used: {solidity_version}
+    agent: smart_contract_researcher
+
+dynamic_code_analysis_task:
+    description: >
+      Conduct a dynamic analysis the codebase for potential vulnerabilities. 
+              This is the solidity smart contract code {code}
+    expected_output: >
+        A list of potential vulnerabilities found in the codebase analyzed dynamically
+    agent: dynamic_code_analysis_agent
+
+detection_task:
+    description: >
+        Detect and report any suspicious observations in the static and dynamic analysis
+    expected_output: >
+        A list of suspicious observations found in the static and dynamic analysis
+    agent: detector_agent
+
+smart_contract_audit_task:
+    description: >
+        Audit smart contracts for potential vulnerabilities. This is the smart contract code {code}. 
+        Take the Solidity version {solidity_version} into account
+    expected_output: >
+        A list of potential vulnerabilities found in the smart contracts with an explanation of each
+    agent: smart_contract_auditor
+
+smart_contract_audit_decision_task:
+    description: >
+        Decide on the audit findings and provide actionable recommendations
+    expected_output: >
+        A list of actionable recommendations based on the audit findings
+    agent: smart_contract_audit_decider
+
+tests_writer_task:
+    description: >
+        Write tests for the smart contracts to ensure that the vulnerabilities are existing. Please 
+        test the smart contract code {code} with your tests using the Solidity version {solidity_version}
+    expected_output: >
+        A list of tests written for the smart contracts which can be put directly into a compilation
+        process
+    agent: tests_writer
+
+documentation_task:
+  description: >
+    Write a detailed documentation about the audit findings
+  expected_output: >
+    A fully fledge reports with the mains findings, each with a full section of information.
+    Formatted as markdown without '```'. Further include the test suite of the test writer so it can
+    be pasted directly into a compilation process.
+  agent: documenting_agent

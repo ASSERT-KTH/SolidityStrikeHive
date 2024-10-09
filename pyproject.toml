@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "offensive_solidity_agents"
+version = "0.1.0"
+description = "offensive-solidity-agents using crewAI"
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<=3.13"
+crewai = { extras = ["tools"], version = ">=0.67.1,<1.0.0" }
+
+
+[tool.poetry.scripts]
+offensive_solidity_agents = "offensive_solidity_agents.main:run"
+run_crew = "offensive_solidity_agents.main:run"
+train = "offensive_solidity_agents.main:train"
+replay = "offensive_solidity_agents.main:replay"
+test = "offensive_solidity_agents.main:test"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
