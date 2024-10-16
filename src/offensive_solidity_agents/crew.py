@@ -1,17 +1,11 @@
 from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
-from langchain_openai import ChatOpenAI
-from sympy.physics.units import temperature
-
-
-# Uncomment the following line to use an example of a custom tool
-# from offensive_solidity_agents.tools.custom_tool import MyCustomTool
-
 # Check our tools documentations for more information on how to use them
 from crewai_tools import SerperDevTool
 
+
 @CrewBase
-class OffensiveSolidityAgentsCrew():
+class OffensiveSolidityAgentsCrew:
 	"""OffensiveSolidityAgents crew"""
 
 	def _create_agent(self, agent_name: str, allowed_tools=[]) -> Agent:
@@ -20,7 +14,7 @@ class OffensiveSolidityAgentsCrew():
 		return Agent(
 			config=self.agents_config[agent_name],
 			verbose=True,
-			llm=LLM(model="ollama/llama3:8b", base_url="http://localhost:11434"),
+			llm=LLM(model="ollama/llama3:8b", base_url="http://localhost:11434"), # ChatOpenAI(temperature=0, model='gpt-4')
 			tools=allowed_tools
 		)
 
@@ -50,10 +44,6 @@ class OffensiveSolidityAgentsCrew():
 		return self._create_agent('static_code_analysis_agent')
 
 	@agent
-	def dynamic_code_analysis_agent(self) -> Agent:
-		return self._create_agent('dynamic_code_analysis_agent')
-
-	@agent
 	def detector_agent(self) -> Agent:
 		return self._create_agent('detector_agent')
 
@@ -69,11 +59,12 @@ class OffensiveSolidityAgentsCrew():
 	def tests_writer(self) -> Agent:
 		return self._create_agent('tests_writer')
 
+	"""
 	@agent
 	def documenting_agent(self) -> Agent:
 		return self._create_agent('documenting_agent')
 
-	"""
+
 	@task
 	def research_task(self) -> Task:
 		return Task(
@@ -101,12 +92,6 @@ class OffensiveSolidityAgentsCrew():
 		)
 
 	@task
-	def dynamic_code_analysis_task(self) -> Task:
-		return Task(
-			config=self.tasks_config['dynamic_code_analysis_task'],
-		)
-
-	@task
 	def detection_task(self) -> Task:
 		return Task(
 			config=self.tasks_config['detection_task'],
@@ -127,14 +112,16 @@ class OffensiveSolidityAgentsCrew():
 	@task
 	def tests_writer_task(self) -> Task:
 		return Task(
-			config=self.tasks_config['tests_writer_task'],
+			config=self.tasks_config['tests_writer_task']
 		)
 
+	"""
 	@task
 	def documentation_task(self) -> Task:
 		return Task(
 			config=self.tasks_config['documentation_task'],
 		)
+	"""
 
 	@crew
 	def crew(self) -> Crew:

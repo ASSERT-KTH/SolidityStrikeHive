@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+import json
+import os
+import subprocess
 import sys
 from offensive_solidity_agents.crew import OffensiveSolidityAgentsCrew
 
@@ -11,13 +14,33 @@ def run():
     """
     Run the crew.
     """
-    with open('src/offensive_solidity_agents/contract.sol') as f:
+    contract_path = 'src/offensive_solidity_agents/contract.sol'
+    solidity_version = '0.4.25'
+    with open(contract_path) as f:
         contract = f.read()
+        subprocess.run(
+            ['solc-select', 'install', solidity_version], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(
+            ['solc-select', 'use', solidity_version], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        result = subprocess.run(
+            ['slither', contract_path, '--json', 'slither-output.json'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        with open('slither-output.json') as f:
+            slither_output = json.load(f)
+
+        os.remove('slither-output.json')
+
     inputs = {
         'code': contract,
-        'solidity_version': '0.4.25',
+        'solidity_version': solidity_version,
+        'slither_output': slither_output
     }
-    OffensiveSolidityAgentsCrew().crew().kickoff(inputs=inputs)
+    results = OffensiveSolidityAgentsCrew().crew().kickoff(inputs=inputs)
+    with open('results.txt', 'w') as f:
+        f.write(str(results))
 
 
 def train():

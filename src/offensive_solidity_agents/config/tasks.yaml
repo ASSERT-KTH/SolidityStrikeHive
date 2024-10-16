@@ -20,9 +20,11 @@
 static_code_analysis_task:
     description: >
         Conduct a static analysis the codebase for potential vulnerabilities.
-        This is the solidity smart contract code {code}
+        This is the solidity smart contract code {code}. Please use the output of the Slither analysis
+        to identify the vulnerabilities given here in JSON format {slither_output}.
     expected_output: >
-        A list of potential vulnerabilities found in the codebase analyzed statically
+        A list of potential vulnerabilities found in the codebase analyzed statically using Slither
+        and ways to exploit them in solidity smart contract code.
     agent: static_code_analysis_agent
 
 smart_contract_research_task:
@@ -30,16 +32,9 @@ smart_contract_research_task:
         Conduct a research on smart contract vulnerabilities given the year is 2024
     expected_output: >
         A list of potential vulnerabilities found in smart contracts with an explanation of the
-        Solidity version used: {solidity_version}
+        Solidity version used: {solidity_version}. Please identify the vulnerabilities and provide
+        an exploit code for each.
     agent: smart_contract_researcher
-
-dynamic_code_analysis_task:
-    description: >
-      Conduct a dynamic analysis the codebase for potential vulnerabilities. 
-              This is the solidity smart contract code {code}
-    expected_output: >
-        A list of potential vulnerabilities found in the codebase analyzed dynamically
-    agent: dynamic_code_analysis_agent
 
 detection_task:
     description: >
@@ -66,17 +61,19 @@ smart_contract_audit_decision_task:
 tests_writer_task:
     description: >
         Write tests for the smart contracts to ensure that the vulnerabilities are existing. Please 
-        test the smart contract code {code} with your tests using the Solidity version {solidity_version}
+        test the smart contract code {code} with your tests using the Solidity version {solidity_version}. 
+        The should pass in case the vulnerabilities is present.
     expected_output: >
-        A list of tests written for the smart contracts which can be put directly into a compilation
-        process
+        Write a file with the tests for the smart contract code {code} using the Solidity version {solidity_version}
+        which pass in case the vulnerabilities are present. Please only return the test suite in a file which can be
+        directly compiled. The manager should be able to copy and paste the test suite into a compilation process.
     agent: tests_writer
 
-documentation_task:
-  description: >
-    Write a detailed documentation about the audit findings
-  expected_output: >
-    A fully fledge reports with the mains findings, each with a full section of information.
-    Formatted as markdown without '```'. Further include the test suite of the test writer so it can
-    be pasted directly into a compilation process.
-  agent: documenting_agent
+#documentation_task:
+#  description: >
+#    Write a detailed documentation about the audit findings
+#  expected_output: >
+#    A fully fledge reports with the mains findings, each with a full section of information.
+#    Formatted as markdown without '```'. Further include the test suite of the test writer so it can
+#    be pasted directly into a compilation process.
+#  agent: documenting_agent
