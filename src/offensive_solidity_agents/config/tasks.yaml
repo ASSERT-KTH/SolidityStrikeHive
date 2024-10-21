@@ -15,7 +15,15 @@
 
 
 
-
+defi_hacklabs_research_task:
+    description: >
+        Conduct a thorough research about in the DefiHackLabs GitHub repository and identify patterns
+        of vulnerabilities in the smart contracts listed there and how to exploit them. Please make sure you find any
+        interesting and relevant exploit code.
+    expected_output: >
+        An detailed report about vulnerabilities shown in the DefiHackLabs GitHub repository with an explanation
+        of the exploit code for each vulnerability.
+    agent: smart_contract_researcher
 
 static_code_analysis_task:
     description: >
@@ -46,9 +54,11 @@ detection_task:
 smart_contract_audit_task:
     description: >
         Audit smart contracts for potential vulnerabilities. This is the smart contract code {code}. 
-        Take the Solidity version {solidity_version} into account
+        Take the Solidity version {solidity_version} into account. Please only return the vulnerabilities
+        identified in the smart contract code and focus on security. Do not include code styling issues.
     expected_output: >
-        A list of potential vulnerabilities found in the smart contracts with an explanation of each
+        A list of potential vulnerabilities found in the smart contracts with an explanation of each. A test writer
+        should be later on able to write comprehensive tests for the vulnerabilities.
     agent: smart_contract_auditor
 
 smart_contract_audit_decision_task:
@@ -65,8 +75,12 @@ tests_writer_task:
         The should pass in case the vulnerabilities is present.
     expected_output: >
         Write a file with the tests for the smart contract code {code} using the Solidity version {solidity_version}
-        which pass in case the vulnerabilities are present. Please only return the test suite in a file which can be
+        MAKE SURE THAT THE TESTS ONLY PASS IN CASE THE VULNERABILITY IS PRESENT. Please only return the test suite in a file which can be
         directly compiled. The manager should be able to copy and paste the test suite into a compilation process.
+        Please just return the test suite code without any additional information. The output will be given to
+        hardhat tool for testing. Please provide only the code for the test suite so it can be copy and
+        pasted into hardhat. It should be a single file with the test suite, the exploiting code to check for the vulnerability
+        existence.
     agent: tests_writer
 
 #documentation_task:
