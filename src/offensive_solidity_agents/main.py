@@ -15,6 +15,8 @@ def run():
     Run the crew.
     """
     contract_path = 'src/offensive_solidity_agents/contract.sol'
+    example_contract_path = 'src/offensive_solidity_agents/ex_contract.sol'
+    example_contract_result_path = 'src/offensive_solidity_agents/ex_contract_exploit.test.js'
     solidity_version = '0.4.25'
     with open(contract_path) as f:
         contract = f.read()
@@ -33,10 +35,18 @@ def run():
 
         os.remove('slither-output.json')
 
+    with open(example_contract_path) as f:
+        example_contract = f.read()
+
+    with open(example_contract_result_path) as f:
+        example_contract_result = f.read()
+
     inputs = {
         'code': contract,
         'solidity_version': solidity_version,
-        'slither_output': slither_output
+        'slither_output': slither_output,
+        'example_contract': example_contract,
+        'example_contract_result': example_contract_result
     }
     results = OffensiveSolidityAgentsCrew().crew().kickoff(inputs=inputs)
     with open('results.txt', 'w') as f:

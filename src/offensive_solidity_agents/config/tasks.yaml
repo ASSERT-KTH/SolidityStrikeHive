@@ -61,27 +61,41 @@ smart_contract_audit_task:
         should be later on able to write comprehensive tests for the vulnerabilities.
     agent: smart_contract_auditor
 
-smart_contract_audit_decision_task:
-    description: >
-        Decide on the audit findings and provide actionable recommendations
-    expected_output: >
-        A list of actionable recommendations based on the audit findings
-    agent: smart_contract_audit_decider
+#smart_contract_audit_decision_task:
+#    description: >
+#        Decide on the audit findings and provide actionable recommendations. If you get a test suite
+#        please verify that the tests are only passing in case the vulnerability is present and not in case
+#        the vulnerability is not present. Please also check the exploit code for the vulnerabilities and verify
+#        whether it is really exploiting the vulnerability.
+#    expected_output: >
+#        A list of actionable recommendations based on the audit findings
+#    agent: smart_contract_audit_decider
 
-tests_writer_task:
+#tests_writer_task:
+#    description: >
+#        Write tests for the smart contracts to ensure that the vulnerabilities are existing. Please
+#        test the smart contract code {code} with your tests using the Solidity version {solidity_version}.
+#        The should pass in case the vulnerabilities is present.
+#    expected_output: >
+#        Write a file with the tests for the smart contract code {code} using the Solidity version {solidity_version}
+#        MAKE SURE THAT THE TESTS ONLY PASS IN CASE THE VULNERABILITY IS PRESENT. Please only return the test suite in a file which can be
+#        directly compiled. The manager should be able to copy and paste the test suite into a compilation process.
+#        Please just return the test suite code without any additional information. The output will be given to
+#        hardhat tool for testing. Please provide only the code for the test suite so it can be copy and
+#        pasted into hardhat. It should be a single file with the test suite, the exploiting code to check for the vulnerability
+#        existence.
+#    agent: tests_writer
+
+
+exploiter_task:
     description: >
-        Write tests for the smart contracts to ensure that the vulnerabilities are existing. Please 
-        test the smart contract code {code} with your tests using the Solidity version {solidity_version}. 
-        The should pass in case the vulnerabilities is present.
+        Analyze the provided smart contract code {code} for vulnerabilities and develop a Hardhat test suite to confirm their existence. Your task is to exploit any discovered vulnerabilities such as underflows, overflows, reentrancy, or improper access control, with the Solidity version {solidity_version}. The test suite should validate that the contract is vulnerable, and the tests should only pass when the exploit is successful. The test suite will then be used to confirm the vulnerability by running in Hardhat.
+        An example is coming from this contract {example_contract} 
+        to this output {example_contract_result}.
     expected_output: >
-        Write a file with the tests for the smart contract code {code} using the Solidity version {solidity_version}
-        MAKE SURE THAT THE TESTS ONLY PASS IN CASE THE VULNERABILITY IS PRESENT. Please only return the test suite in a file which can be
-        directly compiled. The manager should be able to copy and paste the test suite into a compilation process.
-        Please just return the test suite code without any additional information. The output will be given to
-        hardhat tool for testing. Please provide only the code for the test suite so it can be copy and
-        pasted into hardhat. It should be a single file with the test suite, the exploiting code to check for the vulnerability
-        existence.
-    agent: tests_writer
+        Write a single test suite file for the smart contract {code}, using Solidity version {solidity_version}. The test suite should be designed to pass only when the vulnerabilities are successfully exploited. Ensure the output contains just the code for the test suite that can be directly copied and pasted into a Hardhat environment and compiled. The focus should be on ensuring the vulnerability is verifiable by running the tests.
+    agent: exploiter_agent
+
 
 #documentation_task:
 #  description: >

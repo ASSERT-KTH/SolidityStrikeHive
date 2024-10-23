@@ -17,9 +17,19 @@ class OffensiveSolidityAgentsCrew:
 			github_repo='https://github.com/SunWeb3Sec/DeFiHackLabs',
 			content_types=['code', 'repo'] # Options: code, repo, pr, issue
 		)
+		self.swc_registry_github_tool = GithubSearchTool(
+			gh_token=environ.get("GITHUB_TOKEN"),
+			github_repo='https://github.com/SmartContractSecurity/SWC-registry',
+			content_types=['code', 'repo']  # Options: code, repo, pr, issue
+		)
+		self.reentrancy_attacks_github_tool = GithubSearchTool(
+			gh_token=environ.get("GITHUB_TOKEN"),
+			github_repo="https://github.com/pcaversaccio/reentrancy-attacks",
+			content_types=['code', 'repo']  # Options: code, repo, pr, issue
+		)
 
 
-	def _create_agent(self, agent_name: str, llm, allowed_tools=[]) -> Agent:
+	def _create_agent(self, agent_name: str, llm, allowed_tools=[], allow_code_execution=False) -> Agent:
 		"""Creates an agent from the crew"""
 		print(f"Creating agent {agent_name}")
 		return Agent(
@@ -27,7 +37,8 @@ class OffensiveSolidityAgentsCrew:
 			verbose=True,
 			llm=llm, # ChatOpenAI(temperature=0, model='gpt-4')
 			tools=allowed_tools,
-			allow_delegation=True
+			allow_delegation=True,
+			allow_code_execution=allow_code_execution
 		)
 
 	"""
@@ -57,7 +68,8 @@ class OffensiveSolidityAgentsCrew:
 			self.gpt4_llm,
 			[
 				SerperDevTool(),
-				self.defi_hacklabs_github_tool
+				self.defi_hacklabs_github_tool,
+			 self.swc_registry_github_tool, self.reentrancy_attacks_github_tool
 			]
 		)
 
@@ -70,7 +82,8 @@ class OffensiveSolidityAgentsCrew:
 		return self._create_agent(
 			'detector_agent',
 			self.gpt4_llm,
-			[self.defi_hacklabs_github_tool]
+			[self.defi_hacklabs_github_tool,
+			 self.swc_registry_github_tool, self.reentrancy_attacks_github_tool]
 		)
 
 	@agent
@@ -78,24 +91,41 @@ class OffensiveSolidityAgentsCrew:
 		return self._create_agent(
 			'smart_contract_auditor',
 			self.gpt4_llm,
-			[self.defi_hacklabs_github_tool]
+			[self.defi_hacklabs_github_tool,
+			 self.swc_registry_github_tool, self.reentrancy_attacks_github_tool]
 		)
 
+	"""
 	@agent
 	def smart_contract_audit_decider(self) -> Agent:
 		return self._create_agent(
 			'smart_contract_audit_decider',
 			self.gpt4_llm,
-			[self.defi_hacklabs_github_tool]
+			[self.defi_hacklabs_github_tool,
+			 self.swc_registry_github_tool, self.reentrancy_attacks_github_tool]
 		)
+	"""
 
+	"""
 	@agent
 	def tests_writer(self) -> Agent:
 		return self._create_agent(
 			'tests_writer',
-			self.codellama_llm,
-			[self.defi_hacklabs_github_tool, SerperDevTool()]
+			self.gpt4_llm,
+			[self.defi_hacklabs_github_tool, SerperDevTool(),
+			 self.swc_registry_github_tool, self.reentrancy_attacks_github_tool]
 		)
+	"""
+
+	@agent
+	def exploiter_agent(self) -> Agent:
+		return self._create_agent(
+			'exploiter_agent',
+			self.gpt4_llm,
+			[self.defi_hacklabs_github_tool, SerperDevTool(),
+			 self.swc_registry_github_tool, self.reentrancy_attacks_github_tool], allow_code_execution=True
+		)
+
 
 	"""
 	@agent
@@ -151,19 +181,30 @@ class OffensiveSolidityAgentsCrew:
 					 self.detection_task()]
 		)
 
+	"""
 	@task
 	def smart_contract_audit_decision_task(self) -> Task:
 		return Task(
 			config=self.tasks_config['smart_contract_audit_decision_task'],
 			context=[self.smart_contract_audit_task()]
 		)
+	"""
 
+	"""
 	@task
 	def tests_writer_task(self) -> Task:
 		return Task(
 			config=self.tasks_config['tests_writer_task'],
 			context=[self.smart_contract_research_task(), self.defi_hacklabs_research_task(),
 					 self.smart_contract_audit_decision_task()]
+		)
+	"""
+
+	@task
+	def exploiter_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['exploiter_task'],
+			context=[self.smart_contract_research_task(), self.defi_hacklabs_research_task()]
 		)
 
 	"""
