@@ -15,15 +15,15 @@
 
 
 
-defi_hacklabs_research_task:
-    description: >
-        Conduct a thorough research about in the DefiHackLabs GitHub repository and identify patterns
-        of vulnerabilities in the smart contracts listed there and how to exploit them. Please make sure you find any
-        interesting and relevant exploit code.
-    expected_output: >
-        An detailed report about vulnerabilities shown in the DefiHackLabs GitHub repository with an explanation
-        of the exploit code for each vulnerability.
-    agent: smart_contract_researcher
+#defi_hacklabs_research_task:
+#    description: >
+#        Conduct a thorough research about in the DefiHackLabs GitHub repository and identify patterns
+#        of vulnerabilities in the smart contracts listed there and how to exploit them. Please make sure you find any
+#        interesting and relevant exploit code.
+#    expected_output: >
+#        An detailed report about vulnerabilities shown in the DefiHackLabs GitHub repository with an explanation
+#        of the exploit code for each vulnerability.
+#    agent: smart_contract_researcher
 
 static_code_analysis_task:
     description: >
@@ -35,21 +35,21 @@ static_code_analysis_task:
         and ways to exploit them in solidity smart contract code.
     agent: static_code_analysis_agent
 
-smart_contract_research_task:
-    description: >
-        Conduct a research on smart contract vulnerabilities given the year is 2024
-    expected_output: >
-        A list of potential vulnerabilities found in smart contracts with an explanation of the
-        Solidity version used: {solidity_version}. Please identify the vulnerabilities and provide
-        an exploit code for each.
-    agent: smart_contract_researcher
+#smart_contract_research_task:
+#    description: >
+#        Conduct a research on smart contract vulnerabilities given the year is 2024
+#    expected_output: >
+#        A list of potential vulnerabilities found in smart contracts with an explanation of the
+#        Solidity version used: {solidity_version}. Please identify the vulnerabilities and provide
+#        an exploit code for each.
+#    agent: smart_contract_researcher
 
-detection_task:
-    description: >
-        Detect and report any suspicious observations in the static and dynamic analysis
-    expected_output: >
-        A list of suspicious observations found in the static and dynamic analysis
-    agent: detector_agent
+#detection_task:
+#    description: >
+#        Detect and report any suspicious observations in the static and dynamic analysis
+#    expected_output: >
+#        A list of suspicious observations found in the static and dynamic analysis
+#    agent: detector_agent
 
 smart_contract_audit_task:
     description: >
@@ -87,14 +87,48 @@ smart_contract_audit_task:
 #    agent: tests_writer
 
 
-exploiter_task:
+malicious_contract_writer_task:
     description: >
-        Analyze the provided smart contract code {code} for vulnerabilities and develop a Hardhat test suite to confirm their existence. Your task is to exploit any discovered vulnerabilities such as underflows, overflows, reentrancy, or improper access control, with the Solidity version {solidity_version}. The test suite should validate that the contract is vulnerable, and the tests should only pass when the exploit is successful. The test suite will then be used to confirm the vulnerability by running in Hardhat.
-        An example is coming from this contract {example_contract} 
-        to this output {example_contract_result}.
+        Write a malicious contract that exploits the vulnerabilities found in the smart contract code {code}.
+        Please use the Solidity version {solidity_version} for the exploit code. You closely interact with the hardhat test writer
+        to craft a malicious contract that exploits the vulnerabilities found in the smart contract code.
+        Ask the other agents for help if you need it and use the tools given to you to write the exploit code.
     expected_output: >
-        Write a single test suite file for the smart contract {code}, using Solidity version {solidity_version}. The test suite should be designed to pass only when the vulnerabilities are successfully exploited. Ensure the output contains just the code for the test suite that can be directly copied and pasted into a Hardhat environment and compiled. The focus should be on ensuring the vulnerability is verifiable by running the tests.
-    agent: exploiter_agent
+        A malicious smart contract written in Solidity version {solidity_version} that exploits the vulnerabilities found in the smart contract code.
+    agent: malicious_contract_writer
+
+
+hardhat_test_suite_task:
+    description: >
+        Write a detailed test suite for the smart contract code {code} using the Solidity version {solidity_version}.
+        The test suite should only pass in case the vulnerabilities are present. Please only return the test suite in a file which can be
+        directly compiled. The manager should be able to copy and paste the test suite into a compilation process.
+        Please just return the test suite code without any additional information. The output will be given to
+        hardhat tool for testing. Please provide only the code for the test suite so it can be copy and
+        pasted into hardhat. It should be a single file with the test suite, the exploiting code to check for the vulnerability
+        existence.
+        Please use the tools given to you to write the test suite and grasp the learnings from the previous tasks.
+        Ask the other agents for help if you need it.
+    expected_output: >
+        A detailed test suite for the smart contract code {code} using the Solidity version {solidity_version}.
+    agent: hardhat_test_writer
+
+
+#exploiter_task:
+#    description: >
+#        Analyze the provided smart contract code {code} for vulnerabilities and develop a Hardhat
+#        test suite to confirm their existence. Your task is to exploit any discovered vulnerabilities
+#        such as underflows, overflows, reentrancy, or improper access control, with the Solidity
+#        version {solidity_version}. The test suite should validate that the contract is vulnerable,
+#        and the tests should only pass when the exploit is successful. The test suite will then be
+#        used to confirm the vulnerability by running in Hardhat.
+#        An example is coming from this contract {example_contract}
+#        to this output {example_contract_result}.
+#    expected_output: >
+#        Generate a malicious solidity code in solidity version {solidity_version} that exploits the vulnerabilities and the corresponding
+#        JavaScript test file for hardhat. The test suite should be designed to pass only when the
+#        vulnerabilities are successfully exploited!
+#    agent: exploiter_agent
 
 
 #documentation_task:

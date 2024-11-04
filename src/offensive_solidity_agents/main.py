@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import json
 import os
+import re
 import subprocess
 import sys
 from offensive_solidity_agents.crew import OffensiveSolidityAgentsCrew
@@ -20,6 +21,8 @@ def run():
     solidity_version = '0.4.25'
     with open(contract_path) as f:
         contract = f.read()
+        # Fetch solidity version by regex
+        solidity_version = re.search(r"pragma solidity (.*);", contract).group(1)
         subprocess.run(
             ['solc-select', 'install', solidity_version], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         subprocess.run(
