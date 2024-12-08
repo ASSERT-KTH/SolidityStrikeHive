@@ -133,6 +133,7 @@ hardhat_test_suite_task:
         The hardhat test environment cannot get changed so you have to adapt the test suite to the given environment.
         Keep in mind that you can only modify the test suite and not the vulnerable contract.
         The hardhat config is {hardhat_config} and the dependencies are {hardhat_package_json}.
+        YOU DO NOT NEED TO TEST THE GENERAL FUNCTIONALITY OF THE SMART CONTRACT. ONLY TEST FOR THE VULNERABILITIES.
         PLEASE RETURN ONLY CODE WITHOUT FORMATTING AND MARKDOWN EXPLANATION AND ONLY THE TEST SUITE CODE SO IT CAN GET DIRECTLY COMPILED.
     expected_output: >
         A detailed test suite for the smart contract code {code} using the Solidity version {solidity_version}. PLEASE RETURN ONLY CODE AND ONLY THE TEST SUITE CODE SO IT CAN GET DIRECTLY COMPILED.
