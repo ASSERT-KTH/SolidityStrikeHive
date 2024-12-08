@@ -1,6 +1,6 @@
 pragma solidity ^0.4.23;
 
-import "../dataset/access_control/multiowned_vulnerable.sol";
+import "vulnerable_contract.sol";
 
 contract TestContractAttacker {
     TestContract public target;

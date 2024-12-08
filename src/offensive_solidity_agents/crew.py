@@ -1,7 +1,7 @@
 from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
 
-from crewai_tools import SerperDevTool, GithubSearchTool
+from crewai_tools import SerperDevTool, GithubSearchTool, WebsiteSearchTool
 from langchain_openai import ChatOpenAI
 from starlette.config import environ
 
@@ -12,7 +12,11 @@ class OffensiveSolidityAgentsCrew:
 
 	def __init__(self):
 		self.codellama_llm = LLM(model="ollama/llama3:8b", base_url="http://localhost:11434")
-		self.gpt4_llm = LLM(model="gpt-4o", temperature=1)
+		self.gpt4_llm = ChatOpenAI(model="gpt-4o", temperature=1)
+		self.claude_sonnet_llm = LLM(model="claude-3-5-sonnet-20241022", temperature=1)
+		self.claude_haiku = LLM(model="claude-3-haiku-20240307", temperature=1)
+		self.websearch_tool = WebsiteSearchTool()
+		self.serper_dev_tool = SerperDevTool()
 		self.defi_hacklabs_github_tool = GithubSearchTool(
 			gh_token=environ.get("GITHUB_TOKEN"),
 			github_repo='https://github.com/SunWeb3Sec/DeFiHackLabs',
@@ -62,25 +66,25 @@ class OffensiveSolidityAgentsCrew:
 	def manager(self) -> Agent:
 		return self._create_agent('manager', self.gpt4_llm)
 
-	"""
 	@agent
 	def smart_contract_researcher(self) -> Agent:
 		return self._create_agent(
 			'smart_contract_researcher',
 			self.gpt4_llm,
 			[
-				SerperDevTool(),
+				self.serper_dev_tool,
+				self.websearch_tool,
 				self.defi_hacklabs_github_tool,
 			 self.swc_registry_github_tool, self.reentrancy_attacks_github_tool
 			]
 		)
-	"""
 
+	"""
 	@agent
 	def static_code_analysis_agent(self) -> Agent:
 		return self._create_agent('static_code_analysis_agent', self.gpt4_llm)
 
-	"""
+	
 	@agent
 	def detector_agent(self) -> Agent:
 		return self._create_agent(
@@ -93,26 +97,36 @@ class OffensiveSolidityAgentsCrew:
 	def smart_contract_auditor(self) -> Agent:
 		return self._create_agent(
 			'smart_contract_auditor',
-			self.gpt4_llm
+			self.gpt4_llm,
+			[self.websearch_tool, self.serper_dev_tool]
 		)
 
 	@agent
 	def malicious_contract_writer(self) -> Agent:
 		return self._create_agent(
 			'malicious_contract_writer',
-			self.gpt4_llm,
-			[self.defi_hacklabs_github_tool,
-			 self.swc_registry_github_tool, self.reentrancy_attacks_github_tool]
+			self.claude_sonnet_llm,
+			[self.defi_hacklabs_github_tool, self.swc_registry_github_tool, self.reentrancy_attacks_github_tool, self.serper_dev_tool, self.websearch_tool]
 		)
 
 	@agent
 	def hardhat_test_writer(self) -> Agent:
 		return self._create_agent(
 			'hardhat_test_writer',
-			self.gpt4_llm
+			self.claude_sonnet_llm,
+			[self.serper_dev_tool, self.websearch_tool]
 		)
 
 	"""
+	@agent
+	def hardhat_error_researcher(self) -> Agent:
+		return self._create_agent(
+			'hardhat_error_researcher',
+			self.gpt4_llm,
+			[self.websearch_tool, self.serper_dev_tool]
+		)
+
+	
 	@agent
 	def smart_contract_audit_decider(self) -> Agent:
 		return self._create_agent(
@@ -164,6 +178,7 @@ class OffensiveSolidityAgentsCrew:
 			output_file='report.md'
 		)
 	
+	"""
 
 	@task
 	def smart_contract_research_task(self) -> Task:
@@ -171,13 +186,13 @@ class OffensiveSolidityAgentsCrew:
 			config=self.tasks_config['smart_contract_research_task'],
 		)
 	
-
+	"""
 	@task
 	def defi_hacklabs_research_task(self) -> Task:
 		return Task(
 			config=self.tasks_config['defi_hacklabs_research_task'],
 		)
-	"""
+	
 
 	@task
 	def static_code_analysis_task(self) -> Task:
@@ -186,7 +201,6 @@ class OffensiveSolidityAgentsCrew:
 			#context=[self.smart_contract_research_task(), self.defi_hacklabs_research_task()]
 		)
 
-	"""
 	@task
 	def detection_task(self) -> Task:
 		return Task(
@@ -220,13 +234,21 @@ class OffensiveSolidityAgentsCrew:
 
 	"""
 	@task
+	def hardhat_error_research_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['hardhat_error_research_task'],
+			#context=[self.smart_contract_research_task(), self.defi_hacklabs_research_task()]
+		)
+
+
+	
+	@task
 	def smart_contract_audit_decision_task(self) -> Task:
 		return Task(
 			config=self.tasks_config['smart_contract_audit_decision_task'],
 			context=[self.smart_contract_audit_task()]
 		)
 	"""
-
 	"""
 	@task
 	def tests_writer_task(self) -> Task:
@@ -261,7 +283,7 @@ class OffensiveSolidityAgentsCrew:
 			# process=Process.sequential,
 			verbose=True,
 			process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
-			manager_llm=ChatOpenAI(temperature=0, model='gpt-4o'),
+			manager_llm=self.gpt4_llm,
 			#manager_agent=self.manager(),
 			respect_context_window=True,
 			planning=True,
