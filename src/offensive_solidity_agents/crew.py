@@ -64,7 +64,7 @@ class OffensiveSolidityAgentsCrew:
 	"""
 
 	def manager(self) -> Agent:
-		return self._create_agent('manager', self.gpt4_llm)
+		return self._create_agent('manager', self.claude_haiku)
 
 	@agent
 	def smart_contract_researcher(self) -> Agent:
@@ -105,7 +105,7 @@ class OffensiveSolidityAgentsCrew:
 	def malicious_contract_writer(self) -> Agent:
 		return self._create_agent(
 			'malicious_contract_writer',
-			self.claude_sonnet_llm,
+			self.claude_haiku,
 			[self.defi_hacklabs_github_tool, self.swc_registry_github_tool, self.reentrancy_attacks_github_tool, self.serper_dev_tool, self.websearch_tool]
 		)
 
@@ -113,7 +113,7 @@ class OffensiveSolidityAgentsCrew:
 	def hardhat_test_writer(self) -> Agent:
 		return self._create_agent(
 			'hardhat_test_writer',
-			self.claude_sonnet_llm,
+			self.claude_haiku,
 			[self.serper_dev_tool, self.websearch_tool]
 		)
 
