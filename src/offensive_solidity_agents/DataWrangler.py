@@ -12,19 +12,20 @@ class DataWrangler:
         with open('./malicious_contract.sol', 'r') as file:
             mal_contract = file.read()
 
-        with open('./src/offensive_solidity_agents/contract.sol', 'r') as file:
-            ben_contract = file.read()
+        # Copy files from vulnerable_contract_files folder to dataset folder
+        for filename in os.listdir('./vulnerable_contract_files'):
+            with open(f'./vulnerable_contract_files/{filename}', 'r') as file:
+                content = file.read()
+
+                with open(f'./dataset/vulnerable_contracts/{filename}', 'w') as f:
+                    f.write(content)
 
         with open('./test_suite.js', 'r') as file:
             tests = file.read()
 
         # Just grab the code from the file and remove all AI explanations
         mal_code = self._extract_code(mal_contract, 'solidity')
-        ben_code = self._extract_code(ben_contract, 'solidity')
         test_code = self._extract_code(tests, 'javascript')
-
-        with open('./dataset/vulnerable_contracts/vulnerable_contract.sol', 'w') as f:
-            f.write(ben_code)
 
         with open('./dataset/mal_contracts/mal_contract.sol', 'w') as f:
             f.write(mal_code)
