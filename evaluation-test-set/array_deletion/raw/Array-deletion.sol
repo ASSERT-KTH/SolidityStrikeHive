@@ -22,6 +22,47 @@ https://blog.solidityscan.com/improper-array-deletion-82672eed8e8d
 https://github.com/sherlock-audit/2023-03-teller-judging/issues/88
 */
 
+contract ContractTest is Test {
+    ArrayDeletionBug ArrayDeletionBugContract;
+    FixedArrayDeletion FixedArrayDeletionContract;
+
+    function setUp() public {
+        ArrayDeletionBugContract = new ArrayDeletionBug();
+        FixedArrayDeletionContract = new FixedArrayDeletion();
+    }
+
+    function testArrayDeletion() public {
+        ArrayDeletionBugContract.myArray(1);
+        //delete incorrectly
+        ArrayDeletionBugContract.deleteElement(1);
+        ArrayDeletionBugContract.myArray(1);
+        ArrayDeletionBugContract.getLength();
+    }
+
+    function testFixedArrayDeletion() public {
+        FixedArrayDeletionContract.myArray(1);
+        //delete incorrectly
+        FixedArrayDeletionContract.deleteElement(1);
+        FixedArrayDeletionContract.myArray(1);
+        FixedArrayDeletionContract.getLength();
+    }
+
+    receive() external payable {}
+}
+
+contract ArrayDeletionBug {
+    uint[] public myArray = [1, 2, 3, 4, 5];
+
+    function deleteElement(uint index) external {
+        require(index < myArray.length, "Invalid index");
+        delete myArray[index];
+    }
+
+    function getLength() public view returns (uint) {
+        return myArray.length;
+    }
+}
+
 contract FixedArrayDeletion {
     uint[] public myArray = [1, 2, 3, 4, 5];
 
