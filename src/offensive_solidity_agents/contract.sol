@@ -1,74 +1,62 @@
+pragma solidity ^0.7.6;
+// this need to be older version of solidity from 0.8.0 solidty compiler checks for overflow and underflow
+
 /*
- * @source: etherscan.io
- * @author: -
- * @vulnerable_at_lines: 38
- */
+Name: Integrate Overflow
 
-pragma solidity ^0.4.19;
+Description:
+The TimeLock has a flaw in the smart contract code that allows
+an attacker to prematurely withdraw their deposited funds from the TimeLock contract.
+The vulnerability arises due to an overflow in the increaseLockTime function,
+which manipulates the lock time in a way that causes it to wrap around to 0,
+enabling the attacker to withdraw their funds before the actual waiting period expires.
 
-contract PrivateBank
-{
-    mapping (address => uint) public balances;
+This contract is designed to act as a time vault.
+User can deposit into this contract but cannot withdraw for atleast a week.
+User can also extend the wait time beyond the 1 week waiting period.
 
-    uint public MinDeposit = 1 ether;
+/*
+1. Alice and bob both have 1 Ether balance
+2. Deploy TimeLock Contract
+3. Alice and bob both deposit 1 Ether to TimeLock, they need to wait 1 week to unlock Ether
+4. Bob caused an overflow on his lockTime
+5, Alice can't withdraw 1 Ether, because the lock time not expired.
+6. Bob can withdraw 1 Ether, because the lockTime is overflow to 0
 
-    Log TransferLog;
+What happened?
+Attack caused the TimeLock.lockTime to overflow,
+and was able to withdraw before the 1 week waiting period.
 
-    function PrivateBank(address _log)
-    {
-        TransferLog = Log(_log);
+Impact: Solidity < 0.8 and without SafeMath
+
+Mitigation:
+To mitigate the Overflow vulnerability, use SafeMath library or use Solidity > 0.8
+*/
+
+contract TimeLock {
+    mapping(address => uint) public balances;
+    mapping(address => uint) public lockTime;
+
+    function deposit() external payable {
+        balances[msg.sender] += msg.value;
+        lockTime[msg.sender] = block.timestamp + 1 weeks;
     }
 
-    function Deposit()
-    public
-    payable
-    {
-        if(msg.value >= MinDeposit)
-        {
-            balances[msg.sender]+=msg.value;
-            TransferLog.AddMessage(msg.sender,msg.value,"Deposit");
-        }
+    function increaseLockTime(uint _secondsToIncrease) public {
+        lockTime[msg.sender] += _secondsToIncrease; // vulnerable
     }
 
-    function CashOut(uint _am)
-    {
-        if(_am<=balances[msg.sender])
-        {
-            // <yes> <report> REENTRANCY
-            if(msg.sender.call.value(_am)())
-            {
-                balances[msg.sender]-=_am;
-                TransferLog.AddMessage(msg.sender,_am,"CashOut");
-            }
-        }
-    }
+    function withdraw() public {
+        require(balances[msg.sender] > 0, "Insufficient funds");
+        require(
+            block.timestamp > lockTime[msg.sender],
+            "Lock time not expired"
+        );
 
-    function() public payable{}
+        uint amount = balances[msg.sender];
+        balances[msg.sender] = 0;
 
-}
-
-contract Log
-{
-
-    struct Message
-    {
-        address Sender;
-        string  Data;
-        uint Val;
-        uint  Time;
-    }
-
-    Message[] public History;
-
-    Message LastMsg;
-
-    function AddMessage(address _adr,uint _val,string _data)
-    public
-    {
-        LastMsg.Sender = _adr;
-        LastMsg.Time = now;
-        LastMsg.Val = _val;
-        LastMsg.Data = _data;
-        History.push(LastMsg);
+        (bool sent, ) = msg.sender.call{value: amount}("");
+        require(sent, "Failed to send Ether");
     }
 }
