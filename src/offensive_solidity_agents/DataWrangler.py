@@ -1,6 +1,7 @@
 import os
 import re
 
+BASE_DIR = './tmp_dataset'
 
 class DataWrangler:
 
@@ -17,7 +18,7 @@ class DataWrangler:
             with open(f'./vulnerable_contract_files/{filename}', 'r') as file:
                 content = file.read()
 
-                with open(f'./dataset/vulnerable_contracts/{filename}', 'w') as f:
+                with open(f'{BASE_DIR}/vulnerable_contracts/{filename}', 'w') as f:
                     f.write(content)
 
         with open('./test_suite.js', 'r') as file:
