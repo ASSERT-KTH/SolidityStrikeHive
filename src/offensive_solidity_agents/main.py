@@ -45,7 +45,6 @@ def _run_loop(traceback=None) -> (bool, str):
     return _start_docker()
 
 def _run_crew(traceback=None):
-    print(os.getcwd())
     contract_path = 'src/offensive_solidity_agents/contract.sol'
     example_contract_path = 'src/offensive_solidity_agents/ex_contract.sol'
     example_contract_result_path = 'src/offensive_solidity_agents/ex_contract_exploit.test.js'
@@ -136,7 +135,7 @@ def _start_docker() -> (bool, str):
     output = result.stdout + result.stderr
     print("OUTPUT: %s" % output)
     regex = r"(\d+)\s*failing"
-    syntax_error_pattern = r'SyntaxError|Unexpected\s+identifier'
+    syntax_error_pattern = r'HardhatError|SyntaxError|Unexpected\s+identifier'
     match_syntax_error = re.search(syntax_error_pattern, output)
     success = re.search(regex, output) is None and match_syntax_error is None
     return success, output

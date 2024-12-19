@@ -1,0 +1,41 @@
+contracts:
+  - directory: askacr
+    name: askacr
+    source: https://github.com/MetaTrustLabs/SmartContractAttackPoC/tree/main/src/ASKACR
+    commit: 977aa35118d4fa8351126ac4e92dc7f30d313591
+  - directory: tornade_cash
+    name: TornadoCash
+    source: https://github.com/MetaTrustLabs/SmartContractAttackPoC/tree/main/src/TornadoCash
+    commit: 4a23ef3e006120e720a08d3f512b31a8c4a91e00
+  - directory: un
+    name: UN
+    source: https://github.com/MetaTrustLabs/SmartContractAttackPoC/tree/main/src/UN
+    commit: 69dcf6be72544a1e253d5a9ff1963f882f656e6a
+  - directory: pancake_bunny
+    name: PancakeBunny
+    source: https://github.com/PancakeBunny-finance/Bunny/
+    commit: cb7eb0604bc7cd9ddb67f8359b38b99efce31b92
+  - directory: approve_scam
+    name: ApproveScam
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/ApproveScam.sol
+    commit: e17e792e5c7602b8a14d1081f8ec499d3388261d
+  - directory: array_deletion
+    name: ArrayDeletion
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Array-deletion.sol
+    commit: 47073b3496a78a99a37d337333fd078a95e05f34
+  - directory: backdoor_assembly
+    name: BackdoorAssembly
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Backdoor-assembly.sol
+    commit: 9e271282cffeec37ed99b6a49e0b1963f6460e85
+  - directory: bypass_contract
+    name: BypassContract
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Bypasscontract.sol
+    commit: ca53f1325ffd12065a8a9003fb340b5ed43dcc20
+  - directory: bos
+    name: BOS
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/DOS.sol
+    commit: e85a39f681274f878c9d965d2e87bf02e25f3680
+  - directory: delegate_call
+    name: DelegateCall
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Delegatecall.sol
+    commit: bdbf697ec1a59d1e9062ca29f2f9305d2a11f696
