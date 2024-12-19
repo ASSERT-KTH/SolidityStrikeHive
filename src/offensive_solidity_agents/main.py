@@ -4,6 +4,7 @@ import os
 import re
 import subprocess
 import sys
+from distutils.dir_util import copy_tree
 
 from offensive_solidity_agents.crew import OffensiveSolidityAgentsCrew
 
@@ -17,11 +18,21 @@ from offensive_solidity_agents.DataWrangler import DataWrangler
 
 malicious_contract_path = 'malicious_contract.sol'
 test_suite_path = 'test_suite.js'
+VULNERABLE_CONTRACT_FILES = './vulnerable_contract_files'
+EVALUATE = True
 
 def run():
     """
     Run the crew.
     """
+    if EVALUATE:
+        evaluate()
+        return
+    else:
+        _run()
+
+
+def _run() -> (bool, int, str):
     # Delete the malicious contract and test suite files if they exist
     if os.path.exists(malicious_contract_path):
         os.remove(malicious_contract_path)
@@ -37,6 +48,7 @@ def run():
 
     print('End Result: %s' % success)
     print('Latest traceback %s' % traceback)
+    return success, i, traceback
 
 
 def _run_loop(traceback=None) -> (bool, str):
@@ -47,7 +59,7 @@ def _run_loop(traceback=None) -> (bool, str):
 def _run_crew(traceback=None):
     hardhat_config_path = 'hardhat-docker/hardhat.config.js'
     hardhat_package_json_path = 'hardhat-docker/package.json'
-    contract_dir_path = './vulnerable_contract_files'
+    contract_dir_path = VULNERABLE_CONTRACT_FILES
     example_contract_path = 'src/offensive_solidity_agents/ex_contract.sol'
     example_contract_result_path = 'src/offensive_solidity_agents/ex_contract_exploit.test.js'
     solidity_version = '0.4.25'
@@ -65,18 +77,21 @@ def _run_crew(traceback=None):
             })
 
 
-    subprocess.run(
+    res_install = subprocess.run(
         ['solc-select', 'install', solidity_version[1:]], stdout=subprocess.PIPE,
         stderr=subprocess.PIPE)
-    subprocess.run(
+    print(res_install)
+    res_use = subprocess.run(
         ['solc-select', 'use', solidity_version[1:]], stdout=subprocess.PIPE,
         stderr=subprocess.PIPE)
+    print(res_use)
     result = subprocess.run(
         ['slither', contract_dir_path, '--json', 'slither-output.json'],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True
     )
+    print(result)
     with open('slither-output.json') as f:
         slither_output = json.load(f)
 
@@ -237,3 +252,33 @@ def test():
 
     except Exception as e:
         raise Exception(f"An error occurred while replaying the crew: {e}")
+
+
+def evaluate():
+    """
+    Evaluate the model.
+    """
+    # Iterate over all the evaluation files in the directory
+    evaluation_directory = 'evaluation-test-set'
+    for filename in os.listdir(evaluation_directory):
+        # Delete content of VULNERABLE_CONTRACT_FILES
+        for file in os.listdir(VULNERABLE_CONTRACT_FILES):
+            os.remove(f"{VULNERABLE_CONTRACT_FILES}/{file}")
+
+        copy_tree(
+            f"{evaluation_directory}/{filename}/extracted_vuln_contracts",
+            f"{VULNERABLE_CONTRACT_FILES}/"
+        )
+
+        success, index, traceback = _run()
+        print(f"Success: {success}, Index: {index}, Traceback: {traceback}")
+        # Store that information in a file
+        with open('evaluation_results.jsonl', 'a') as f:
+            f.write(json.dumps(
+                {
+                    'contract_name': filename,
+                    'success': success,
+                    'index': index,
+                    'traceback': traceback
+                }
+            ))

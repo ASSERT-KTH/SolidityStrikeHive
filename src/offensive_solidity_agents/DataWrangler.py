@@ -9,7 +9,10 @@ class DataWrangler:
         """
         Copies the code from markdown results to the database folder
         """
-        print(os.path)
+        # Empty the dataset folder first
+        for filename in os.listdir(f'{BASE_DIR}/vulnerable_contracts'):
+            os.remove(f'{BASE_DIR}/vulnerable_contracts/{filename}')
+
         with open('./malicious_contract.sol', 'r') as file:
             mal_contract = file.read()
 
@@ -28,10 +31,10 @@ class DataWrangler:
         mal_code = self._extract_code(mal_contract, 'solidity')
         test_code = self._extract_code(tests, 'javascript')
 
-        with open('./dataset/mal_contracts/mal_contract.sol', 'w') as f:
+        with open(f'{BASE_DIR}/mal_contracts/mal_contract.sol', 'w') as f:
             f.write(mal_code)
 
-        with open('./dataset/tests/tests.js', 'w') as f:
+        with open(f'{BASE_DIR}/tests/tests.js', 'w') as f:
             f.write(test_code)
 
 

