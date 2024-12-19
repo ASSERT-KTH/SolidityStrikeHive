@@ -45,37 +45,42 @@ def _run_loop(traceback=None) -> (bool, str):
     return _start_docker()
 
 def _run_crew(traceback=None):
-    contract_path = 'src/offensive_solidity_agents/contract.sol'
-    example_contract_path = 'src/offensive_solidity_agents/ex_contract.sol'
-    example_contract_result_path = 'src/offensive_solidity_agents/ex_contract_exploit.test.js'
     hardhat_config_path = 'hardhat-docker/hardhat.config.js'
     hardhat_package_json_path = 'hardhat-docker/package.json'
+    contract_dir_path = './vulnerable_contract_files'
+    example_contract_path = 'src/offensive_solidity_agents/ex_contract.sol'
+    example_contract_result_path = 'src/offensive_solidity_agents/ex_contract_exploit.test.js'
     solidity_version = '0.4.25'
-    with open(contract_path) as f:
-        contract = f.read()
-        # Fetch solidity version by regex
-        solidity_version = re.search(r"pragma solidity (.*);", contract).group(1)
-        subprocess.run(
-            ['solc-select', 'install', solidity_version], stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
-        subprocess.run(
-            ['solc-select', 'use', solidity_version], stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
-        result = subprocess.run(
-            ['slither', contract_path, '--json', 'slither-output.json'],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True
-        )
+    vulnerable_contract_file_data = []
+    # Iterate over all the files in the directory
+    for filename in os.listdir(contract_dir_path):
+        with open(f"{contract_dir_path}/{filename}") as f:
+            contract = f.read()
+            # Fetch solidity version by regex
+            solidity_version = re.search(r"pragma solidity (.*);", contract).group(1)
+            vulnerable_contract_file_data.append({
+                'contract': contract,
+                'solidity_version': solidity_version,
+                'filename': filename
+            })
 
-        # If slither file is not created, log the error
-        if not os.path.exists('slither-output.json'):
-            print('ERROR: Slither output file not created')
-            slither_output = None
-        else:
-            with open('slither-output.json') as f:
-                slither_output = json.load(f)
-            os.remove('slither-output.json')
+
+    subprocess.run(
+        ['solc-select', 'install', solidity_version[1:]], stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE)
+    subprocess.run(
+        ['solc-select', 'use', solidity_version[1:]], stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE)
+    result = subprocess.run(
+        ['slither', contract_dir_path, '--json', 'slither-output.json'],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True
+    )
+    with open('slither-output.json') as f:
+        slither_output = json.load(f)
+
+    os.remove('slither-output.json')
 
     with open(example_contract_path) as f:
         example_contract = f.read()
@@ -99,9 +104,14 @@ def _run_crew(traceback=None):
         with open(test_suite_path) as f:
             test_suite_previous_execution = f.read()
 
+    solidity_versions = list(
+        set([contract['solidity_version'] for contract in vulnerable_contract_file_data]))
+    filenames = [contract['filename'] for contract in vulnerable_contract_file_data]
+
     inputs = {
-        'code': contract,
-        'solidity_version': solidity_version,
+        'contracts': vulnerable_contract_file_data,
+        'solidity_versions': solidity_versions,
+        'filenames': filenames,
         'slither_output': slither_output,
         'example_contract': example_contract,
         'example_contract_result': example_contract_result,
@@ -145,30 +155,40 @@ def train():
     """
     Train the crew for a given number of iterations.
     """
-    contract_path = 'src/offensive_solidity_agents/contract.sol'
+    contract_dir_path = 'vulnerable_contract_files'
     example_contract_path = 'src/offensive_solidity_agents/ex_contract.sol'
     example_contract_result_path = 'src/offensive_solidity_agents/ex_contract_exploit.test.js'
     solidity_version = '0.4.25'
-    with open(contract_path) as f:
-        contract = f.read()
-        # Fetch solidity version by regex
-        solidity_version = re.search(r"pragma solidity (.*);", contract).group(1)
-        subprocess.run(
-            ['solc-select', 'install', solidity_version], stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
-        subprocess.run(
-            ['solc-select', 'use', solidity_version], stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
-        result = subprocess.run(
-            ['slither', contract_path, '--json', 'slither-output.json'],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True
-        )
-        with open('slither-output.json') as f:
-            slither_output = json.load(f)
+    vulnerable_contract_file_data = []
+    # Iterate over all the files in the directory
+    for filename in os.listdir(contract_dir_path):
+        with open(filename) as f:
+            contract = f.read()
+            # Fetch solidity version by regex
+            solidity_version = re.search(r"pragma solidity (.*);", contract).group(1)
+            subprocess.run(
+                ['solc-select', 'install', solidity_version], stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
+            subprocess.run(
+                ['solc-select', 'use', solidity_version], stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
+            result = subprocess.run(
+                ['slither', filename, '--json', 'slither-output.json'],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+            with open('slither-output.json') as f:
+                slither_output = json.load(f)
 
-        os.remove('slither-output.json')
+            os.remove('slither-output.json')
+
+            vulnerable_contract_file_data.append({
+                'contract': contract,
+                'solidity_version': solidity_version,
+                'slither_output': slither_output,
+                'filename': filename
+            })
 
     with open(example_contract_path) as f:
         example_contract = f.read()
@@ -176,11 +196,16 @@ def train():
     with open(example_contract_result_path) as f:
         example_contract_result = f.read()
 
+
+    solidity_versions = list(set([contract['solidity_version'] for contract in vulnerable_contract_file_data]))
+    slither_outputs = [contract['slither_output'] for contract in vulnerable_contract_file_data]
+    filenames = [contract['filename'] for contract in vulnerable_contract_file_data]
     inputs = {
-        'code': contract,
-        'solidity_version': solidity_version,
-        'slither_output': slither_output,
+        'contracts': vulnerable_contract_file_data,
+        'solidity_versions': solidity_versions,
         'example_contract': example_contract,
+        'filenames': filenames,
+        'slither_outputs': slither_outputs,
         'example_contract_result': example_contract_result,
         'traceback_previous_execution': None
     }
