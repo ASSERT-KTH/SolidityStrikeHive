@@ -9,7 +9,7 @@ describe("TimeLock", function () {
     [owner, bob, alice] = await ethers.getSigners();
 
     // Deploy the TimeLock contract
-    const TimeLockContract = await ethers.getContractFactory("TimeLock");
+    const TimeLockContract = await ethers.getContractFactory("contracts/contract.sol:TimeLock");
     timeLock = await TimeLockContract.deploy();
     await timeLock.deployed();
   });

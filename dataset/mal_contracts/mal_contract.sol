@@ -1,6 +1,6 @@
 pragma solidity ^0.7.6;
 
-import "./vulnerable_contract.sol";
+import "./contract.sol";
 
 contract MaliciousContract {
     TimeLock public timeLock;
@@ -22,5 +22,5 @@ contract MaliciousContract {
         timeLock.withdraw();
     }
 
-    receive() external payable {} 
+    receive() external payable {}
 }
