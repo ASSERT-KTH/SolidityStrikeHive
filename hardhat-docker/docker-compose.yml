@@ -2,7 +2,7 @@ services:
   hardhat-test:
     build: .
     volumes:
-      - ../dataset/vulnerable_contracts:/tmp/vulnerable_contracts
-      - ../dataset/mal_contracts:/tmp/mal_contracts
-      - ../dataset/tests:/tmp/tests
+      - ../tmp_dataset/vulnerable_contracts:/tmp/vulnerable_contracts
+      - ../tmp_dataset/mal_contracts:/tmp/mal_contracts
+      - ../tmp_dataset/tests:/tmp/tests
     working_dir: /usr/src/app

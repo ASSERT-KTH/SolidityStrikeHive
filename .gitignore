@@ -438,3 +438,8 @@ dist
 .pnp.*
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,linux,python,pycharm+all,solidity
+
+
+malicious_contract.sol
+test_suite.js
+results.txt

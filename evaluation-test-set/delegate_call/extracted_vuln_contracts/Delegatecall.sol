@@ -37,3 +37,11 @@ contract Proxy {
         require(suc, "Delegatecall failed");
     }
 }
+
+contract Delegate {
+    address public owner; // slot0
+
+    function pwn() public {
+        owner = msg.sender;
+    }
+}

@@ -287,6 +287,6 @@ class OffensiveSolidityAgentsCrew:
 			#manager_agent=self.manager(),
 			respect_context_window=True,
 			planning=True,
-			memory=True,
+			memory=False,
 			output_log_file='output.log',
 		)
