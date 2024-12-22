@@ -50,16 +50,16 @@ smart_contract_researcher:
 #        potential security risks and provide actionable recommendations for
 #        improving code quality and security.
 
-smart_contract_auditor:
-    role: >
-        Smart Contract Auditor
-    goal: >
-        Audit smart contracts for potential vulnerabilities
-    backstory: >
-        You're a seasoned smart contract auditor with a keen eye for spotting
-        vulnerabilities in smart contracts in Solidity. You're known for your ability to identify
-        potential security risks and provide actionable recommendations for
-        improving smart contract security.
+#smart_contract_auditor:
+#    role: >
+#        Smart Contract Auditor
+#    goal: >
+#        Audit smart contracts for potential vulnerabilities
+#    backstory: >
+#        You're a seasoned smart contract auditor with a keen eye for spotting
+#        vulnerabilities in smart contracts in Solidity. You're known for your ability to identify
+#        potential security risks and provide actionable recommendations for
+#        improving smart contract security.
 
 #smart_contract_audit_decider:
 #    role: >

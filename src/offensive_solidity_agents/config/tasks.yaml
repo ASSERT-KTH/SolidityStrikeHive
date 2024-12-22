@@ -53,15 +53,15 @@ smart_contract_research_task:
 #        A list of suspicious observations found in the static and dynamic analysis
 #    agent: detector_agent
 
-smart_contract_audit_task:
-    description: >
-        Audit smart contracts for potential vulnerabilities. This is the smart contract code {contracts}. 
-        Take the Solidity version {solidity_versions} into account. Please only return the vulnerabilities
-        identified in the smart contract code and focus on security. Do not include code styling issues.
-    expected_output: >
-        A list of potential vulnerabilities found in the smart contracts with an explanation of each. A test writer
-        should be later on able to write comprehensive tests for the vulnerabilities.
-    agent: smart_contract_auditor
+#smart_contract_audit_task:
+#    description: >
+#        Audit smart contracts for potential vulnerabilities. This is the smart contract code {contracts}.
+#        Take the Solidity version {solidity_versions} into account. Please only return the vulnerabilities
+#        identified in the smart contract code and focus on security. Do not include code styling issues.
+#    expected_output: >
+#        A list of potential vulnerabilities found in the smart contracts with an explanation of each. A test writer
+#        should be later on able to write comprehensive tests for the vulnerabilities.
+#    agent: smart_contract_auditor
 
 #smart_contract_audit_decision_task:
 #    description: >

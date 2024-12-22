@@ -91,7 +91,7 @@ class OffensiveSolidityAgentsCrew:
 			'detector_agent',
 			self.gpt4_llm
 		)
-	"""
+	
 
 	@agent
 	def smart_contract_auditor(self) -> Agent:
@@ -100,6 +100,7 @@ class OffensiveSolidityAgentsCrew:
 			self.gpt4_llm,
 			[self.websearch_tool, self.serper_dev_tool]
 		)
+	"""
 
 	@agent
 	def malicious_contract_writer(self) -> Agent:
@@ -207,7 +208,7 @@ class OffensiveSolidityAgentsCrew:
 			config=self.tasks_config['detection_task'],
 			context=[self.smart_contract_research_task(), self.defi_hacklabs_research_task()]
 		)
-	"""
+	
 
 	@task
 	def smart_contract_audit_task(self) -> Task:
@@ -217,6 +218,7 @@ class OffensiveSolidityAgentsCrew:
 			#		 #self.detection_task()
 			#		 ]
 		)
+	"""
 
 	@task
 	def malicious_contract_writer_task(self) -> Task:
