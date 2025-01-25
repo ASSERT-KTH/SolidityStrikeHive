@@ -1,24 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-/*
-Name: STA token had a deflationary model with transfer fee of 1% charged from a recipient.
-
-Description:
-The actual deposited amount might be lower than the specified depositAmount of the function parameter.
-
-VulnVault: Incompatability with deflationary / fee-on-transfer tokens
-
-Mitigation:  
-Transfer the tokens first and compare pre-/after token balances to compute the actual deposited amount.
-
-REF:
-https://twitter.com/1nf0s3cpt/status/1671084918506684418
-https://medium.com/1inch-network/balancer-hack-2020-a8f7131c980e
-https://twitter.com/BlockSecTeam/status/1600442137811689473
-*/
-
-
 interface IERC20 {
     function totalSupply() external view returns (uint256);
 
@@ -248,7 +230,6 @@ contract STA is ERC20Detailed {
     }
 }
 
-//vulnerable vault
 contract VulnVault {
     mapping(address => uint256) private balances;
     uint256 private fee;
