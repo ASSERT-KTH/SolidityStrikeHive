@@ -39,3 +39,203 @@ contracts:
     name: DelegateCall
     source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Delegatecall.sol
     commit: bdbf697ec1a59d1e9062ca29f2f9305d2a11f696
+  - directory: data_location
+    name: DataLocation
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/DataLocation.sol
+    commit: 734968621c650954e855cc0221f226a9499ad5f7
+  - directory: dirty_bytes
+    name: Dirtybytes
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Dirtybytes.sol
+    commit: 1784d98cc57958997c7815ccbdc1ee2b42faf8b7
+  - directory: div_multiply
+    name: Divmultiply
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Divmultiply.sol
+    commit: 53da830bfec216f92369b3334d05332dd57dcbbb
+  - directory: erc777_reentrancy
+    name: ERC777-Reentrancy
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/ERC777-reentrancy.sol
+    commit: 0d272af7346499158308c3522c39281279df4a75
+  - directory: flashloan_flaw
+    name: Flashloan-Flaw
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Flashloan-flaw.sol
+    commit: bb98bef6fda85065c7a578164827c15a5f166d9b
+  - directory: hash_collisions
+    name: Hash-collisions
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Hash-collisions.sol
+    commit: 655c13c2e30a30d4d3866b34a43b46208fb4c639
+  - directory: immunefi_ch1
+    name: Immunefi_ch1
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Immunefi_ch1.sol
+    commit: e232114f649943b6238f4ea2235ea51c232ce6a6
+  - directory: immunefi_ch2
+    name: Immunefi_ch2
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Immunefi_ch2.sol
+    commit: e232114f649943b6238f4ea2235ea51c232ce6a6
+  - directory: incorrect_sanity_checks
+    name: Incorrect_sanity_checks
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Incorrect_sanity_checks.sol
+    commit: c99f36ebe3cd783a1176066dc367abf1bd273254
+  - directory: invariant
+    name: Invariant
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Invariant.sol
+    commit: 48c8c17b56efbf2f5c66448b5120e1baf7997061
+  - directory: nft_transfer
+    name: NFT-transfer
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/NFT-transfer.sol
+    commit: 148f7fab395943622c1523ee98640a0b08b0b3cd
+  - directory: nftmint_exposed_metadata
+    name: NFTMint_exposedMetadata
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/NFTMint_exposedMetadata.sol
+    commit: e406993e8ec886b1a3da42cb8a63c84b1a7c8b28
+  - directory: oracle_stale
+    name: Oracle-stale
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Oracle-stale.sol
+    commit: adac8b5ce8e1771a5d6ddefdd5225d4087ff9791
+  - directory: overflow
+    name: Overflow
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Overflow.sol
+    commit: 39f6a274a8eaf484040ae1bafc4e8942e9aaf66e
+  - directory: overflow2
+    name: Overflow2
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Overflow2.sol
+    commit: fc07233288e8ae2a116226d4bac821c393d56390
+  - directory: precision_loss
+    name: Precision-loss
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Precision-loss.sol
+    commit: 7cd483846cf2221b646c14c4eafd1cec7958839d
+  - directory: price_manipulation
+    name: Price_manipulation
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Price_manipulation.sol
+    commit: fbb9940f8b844148caa13c8ed8ff0eb2cf47ce21
+  - directory: privatedata
+    name: Privatedata
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Privatedata.sol
+    commit: 847eff6cc55d57b2705205e4cb3e033207d2bca5
+  - directory: randomness
+    name: Randomness
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Randomness.sol
+    commit: 509a7d7ab6b7a59262e6c647e7b95427bd275527
+  - directory: readonly_reentrancy
+    name: ReadonlyReentrancy
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/ReadOnlyReentrancy.sol
+    commit: 37f2f7039302193ad2743d16d2a0688a6779517b
+  - directory: reentrancy
+    name: Reentrancy
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Reentrancy.sol
+    commit: 0e52d1101f4d1a2f731c23404d5284a5777ec57b
+  - directory: returnfalse
+    name: Returnfalse
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Returnfalse.sol
+    commit: 69ac1ca63cfcc89607e83ffbbabaf87e8a2b1472
+  - directory: returnvalue
+    name: Returnvalue
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Returnvalue.sol
+    commit: ea450521cd2230d2ef2b15c1af7c24e4779d92ac
+  - directory: selfdestruct
+    name: Selfdestruct
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Selfdestruct.sol
+    commit: 6a767d3467006997ada70c430968e8f63e81cd7b
+  - directory: selfdestruct2
+    name: Selfdestruct2
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Selfdestruct2.sol
+    commit: 5b3b62cf68995a581ffa419b191e6e28ecd6a70c
+  - directory: sense_finance_exp
+    name: SenseFinance_exp
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/SenseFinance_exp.sol
+    commit: e232114f649943b6238f4ea2235ea51c232ce6a6
+  - directory: signature_replay
+    name: SignatureReplay
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/SignatureReplay.sol
+    commit: 98cc697b1dd2e59152c21f622375a013982732eb
+  - directory: signature_replay_nba
+    name: SignatureReplayNBA
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/SignatureReplayNBA.sol
+    commit: e232114f649943b6238f4ea2235ea51c232ce6a6
+  - directory: slippage_deadline
+    name: Slippage-deadline
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Slippage-deadline.sol
+    commit: c6decac2a08f7219debcb31ee3ed832ab6ecdca5
+  - directory: slippage_collision_audio
+    name: Slippage-collision-audio
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Storage-collision-audio.sol
+    commit: e232114f649943b6238f4ea2235ea51c232ce6a6
+  - directory: storage_collision
+    name: Storage-collision
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Storage-collision.sol
+    commit: b9deb2fd842d1a054a09b965f695f4abb79d8c27
+  - directory: struct_deletion
+    name: Struct-deletion
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Struct-deletion.sol
+    commit: 26c661b05e431881e3f76bc25a0febc4b9b8c1c9
+  - directory: uninitialized_variables
+    name: Uninitialized_variables
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Uninitialized_variables.sol
+    commit: 8841690f6569588add18a58eedb117c5e1af0c66
+  - directory: uniswap_v3_eth_refund_exploit
+    name: UniswapV3ETHRefundExploit
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/UniswapV3ETHRefundExploit.sol
+    commit: e232114f649943b6238f4ea2235ea51c232ce6a6
+  - directory: unprotected_callback
+    name: Unprotected-callback
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Unprotected-callback.sol
+    commit: 668988b8d6123df5bcb187ebdf5ed302bff3171e
+  - directory: unsafe_call
+    name: UnsafeCall
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/UnsafeCall.sol
+    commit: fab537ae35e42abf07576af5b678c307a36e23ab
+  - directory: visibility
+    name: Visibility
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/Visibility.sol
+    commit: b4261a672f8bed6f81d56bf7e9fc25391a695c2a
+  - directory: ecrecover
+    name: ecrecover
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/ecrecover.sol
+    commit: 7a80a6ec10fe6740c9a2d5c585c4aa6ab7bd6fac
+  - directory: empty_loop
+    name: empty-loop
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/empty-loop.sol
+    commit: b0a024ba6a00af72130a3f10d7592f319ca90c79
+  - directory: fee_on_transfer
+    name: fee-on-transfer
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/fee-on-transfer.sol
+    commit: e6caf6d82e43d16cbdcf1871e32a399749b406b4
+  - directory: first_deposit
+    name: first-deposit
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/first-deposit.sol
+    commit: 1d8da9e8c9c94cf8bd5f78e3def6c227dae118ef
+  - directory: gas_price
+    name: gas-price
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/gas-price.sol
+    commit: 302b999d2b893b8feedaf270196a4aed1293cc06
+  - directory: interface
+    name: interface
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/interface.sol
+    commit: e232114f649943b6238f4ea2235ea51c232ce6a6
+  - directory: payable_transfer
+    name: payable-transfer
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/payable-transfer.sol
+    commit: 719bca8718c4bf04b3c886cf27040e39a9c8b1ec
+  - directory: phantom_permit
+    name: phantom-permit
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/phantom-permit.sol
+    commit: a3f26b8f4fe1f2f344f82a63afbb59b138b29c68
+  - directory: recover_erc20
+    name: recoverERC20
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/recoverERC20.sol
+    commit: 52defc7c2fc286cd954d3761395dcf34dfebd2ab
+  - directory: return_break
+    name: return-break
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/return-break.sol
+    commit: e672f4f492c6013ceb3482a44422c98220929518
+  - directory: self_transfer
+    name: self-transfer
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/self-transfer.sol
+    commit: 9d930ebfb7bafee3161dae4086cd4516513ea7a3
+  - directory: tx_origin
+    name: txorigin
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/txorigin.sol
+    commit: a41eebe2e611512dd715529ae6cef89ba2316c1f
+  - directory: unsafe_downcast
+    name: unsafe-downcast
+    source: https://github.com/SunWeb3Sec/DeFiVulnLabs/blob/main/src/test/unsafe-downcast.sol
+    commit: 7c0618796cf714d817aac293ce3fa0261adceabf
