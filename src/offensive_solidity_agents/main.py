@@ -19,7 +19,7 @@ from offensive_solidity_agents.DataWrangler import DataWrangler
 malicious_contract_path = 'malicious_contract.sol'
 test_suite_path = 'test_suite.js'
 VULNERABLE_CONTRACT_FILES = './vulnerable_contract_files'
-EVALUATE = True
+EVALUATE = False
 
 def run():
     """
